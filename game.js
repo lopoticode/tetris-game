@@ -329,7 +329,7 @@ document.addEventListener('keydown', function (e) {
     if (e.key === " ") {
         tetris.start();
         //play musique tetris_cat_song.mp3
-        /*let audio = new Audio('tetris_cat_song.mp3');
+        /*let audio = new Audio('audio/tetris_cat_song.mp3');
         audio.play();
         audio.loop = true;*/
     }

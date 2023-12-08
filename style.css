@@ -42,7 +42,8 @@ img {
     display: block;
     margin-left: 1em;
 }
-#hold, #next {
+#hold, #next, #score {
+    margin:0px;
     width: 15em;
     height: 10em;
 }
@@ -51,6 +52,30 @@ img {
     display:flex;
     justify-content: center;
     margin-top: 35px;
+}
+
+#next{
+    display:flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-left:1em;
+}
+
+#score {
+    margin-top: 10%;
+}
+
+#next-piece {
+    width: auto;
+    height: 70%;
+    padding:0;
+    margin: auto;
+}
+
+#holden-piece, #score {
+    width: auto;
+    height: 15%;
+    padding:0;
 }
 
 @media screen and (max-width: 699px) {
