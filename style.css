@@ -1,0 +1,80 @@
+@font-face {
+    font-family: 'tetris';
+    src: url("fonts/Retro_Gaming.ttf") format('truetype'),
+    url("fonts/Retro-Gaming.woff") format('woff');
+}
+
+*, body {
+    margin: 0;
+    padding: 0;
+    background-color: #EFE9E7;
+}
+#text{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+}
+h1 {
+    text-align: center;
+    font-family: 'tetris';
+    font-size: 5em;
+    margin-top:0.5em;
+}
+
+p, h2 {
+    text-align: center;
+    font-family: Consolas;
+    font-size:1.5em;
+}
+
+img {
+    width: 60px;
+    height: 60px;
+    padding: 15% 35%;
+    background-color: white;
+}
+
+#tetriste, #hold, #next {
+    position: relative;
+    border: 2px solid #000;
+    background-color: #fff;
+    overflow: hidden;
+    display: block;
+    margin-left: 1em;
+}
+#hold, #next {
+    width: 15em;
+    height: 10em;
+}
+
+#game {
+    display:flex;
+    justify-content: center;
+    margin-top: 35px;
+}
+
+@media screen and (max-width: 699px) {
+    h1 {
+        font-size: 35px;
+    }
+
+    #text {
+        font-size: 12px;
+    }
+
+    #hold, #next {
+        width: 7em;
+        height: 6em;
+    }
+
+    #tetriste {
+        width: 15em;
+        height: 30em;
+    }
+
+    img {
+        width: 60px;
+        height: 60px;
+        padding: 5% 25%;
+    }
+}
