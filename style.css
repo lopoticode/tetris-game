@@ -21,20 +21,30 @@ h1 {
     margin-top:0.5em;
 }
 
+#score-player {
+    background-color: white;
+}
+
+#end-dialog {
+    background-color: white;
+    color: #A22522;
+    font-size: 15px;
+}
+
 p, h2 {
     text-align: center;
     font-family: Consolas;
-    font-size:1.5em;
+    font-size: 1.5em;
 }
 
-img {
-    width: 60px;
+#next-piece {
+    width: 120px;
     height: 60px;
     padding: 15% 35%;
     background-color: white;
 }
 
-#tetriste, #hold, #next {
+#tetriste, #next, #score {
     position: relative;
     border: 2px solid #000;
     background-color: #fff;
@@ -42,8 +52,8 @@ img {
     display: block;
     margin-left: 1em;
 }
-#hold, #next, #score {
-    margin:0px;
+
+#next, #score{
     width: 15em;
     height: 10em;
 }
@@ -61,21 +71,11 @@ img {
     margin-left:1em;
 }
 
-#score {
-    margin-top: 10%;
-}
-
 #next-piece {
     width: auto;
     height: 70%;
     padding:0;
     margin: auto;
-}
-
-#holden-piece, #score {
-    width: auto;
-    height: 15%;
-    padding:0;
 }
 
 @media screen and (max-width: 699px) {
@@ -87,7 +87,7 @@ img {
         font-size: 12px;
     }
 
-    #hold, #next {
+    #next {
         width: 7em;
         height: 6em;
     }
@@ -97,7 +97,7 @@ img {
         height: 30em;
     }
 
-    img {
+    #next-piece, #score {
         width: 60px;
         height: 60px;
         padding: 5% 25%;

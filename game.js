@@ -19,9 +19,10 @@ let shapes = {
         [1, 1, 0]],
     reverseS: [[1, 1, 0],
         [0, 1, 1]],
-    t: [[0, 1, 0],
-        [1, 1, 1]]
+    t: [[1, 1, 1],
+        [0, 1, 0]]
 };
+
 class Case {
     constructor(x, y, color) {
         this.x = x;
@@ -36,6 +37,7 @@ class Piece {
         this.y = y;
         this.color = color;
         this.shape = shape;
+        this.rotation = 0;
         this.typeShape = Object.keys(shapes).find(key => shapes[key] === shape);
     }
 }
@@ -43,6 +45,7 @@ class Piece {
 class Game {
     constructor() {
         this.init();
+        this.audio = new Audio('audio/tetris_cat_song.mp3');
     }
 
     init() {
@@ -77,7 +80,7 @@ class Game {
         let random = Math.floor(Math.random() * shapesKeys.length);
         let shape = shapes[shapesKeys[random]];
 
-        let colors = ["red", "blue", "green", "pink", "purple"];
+        let colors = ["#B56576", "#DDF2EB", "#96E072", "#EEE5E9", "#5BC0EB"];
         random = Math.floor(Math.random() * colors.length);
         let color = colors[random];
 
@@ -92,10 +95,16 @@ class Game {
         ctx.beginPath();
         for (let y = 0; y < 22; y++) {
             for (let x = 0; x < 10; x++) {
-                ctx.fillStyle = this.board[y][x].color;
+                ctx.fillStyle = "white";//this.board[y][x].color;
                 ctx.fillRect(x * 30 + 1, y * 30 + 1, 28, 28);
             }
         }
+
+        this.pieces.forEach(piece => {
+            if(piece !== this.nextPiece)
+                this.drawPieceImg(piece);
+        });
+
         ctx.stroke();
     }
 
@@ -106,6 +115,20 @@ class Game {
             for (let x = 0; x < piece.shape[y].length; x++) {
                 if (piece.shape[y][x] === 1) {
                     ctx.fillRect((piece.x + x) * 30 + 1, (piece.y + y) * 30 + 1, 28, 28);
+                }
+            }
+        }
+    }
+
+    drawPieceImg(piece) {
+        let ctx = canvas.getContext("2d");
+        let img = new Image();
+        img.src = "images/" + piece.typeShape + ".svg";
+
+        for (let y = 0; y < piece.shape.length; y++) {
+            for (let x = 0; x < piece.shape[y].length; x++) {
+                if (piece.shape[y][x] === 1 && this.board[piece.y + y][piece.x + x].color !== "white") {
+                    ctx.drawImage(img, (piece.x + x) * 30 + 1, (piece.y + y) * 30 + 1, 28, 28);
                 }
             }
         }
@@ -144,6 +167,8 @@ class Game {
     }
 
     rotatePiece() {
+        this.pieces[this.pieces.length - 2].rotation = (this.currentPiece.rotation + 90) % 360;
+
         let shape = this.currentPiece.shape;
         let newShape = [];
         for (let x = 0; x < shape[0].length; x++) {
@@ -153,7 +178,6 @@ class Game {
             }
         }
 
-        // check if the piece can be rotated without collision with the board and other pieces
         for (let y = 0; y < newShape.length; y++) {
             for (let x = 0; x < newShape[y].length; x++) {
                 if (newShape[y][x] === 1 && this.board[this.currentPiece.y + y][this.currentPiece.x + x].color !== "white" || this.currentPiece.x + x < 0 || this.currentPiece.x + x > 9) {
@@ -221,17 +245,18 @@ class Game {
                 this.score += 30;
                 break;
             case 2:
-                this.score += 40;
+                this.score += 65;
                 break;
             case 3:
-                this.score += 50;
+                this.score += 100;
                 break;
             case 4:
-                this.score += 60;
+                this.score += 135;
                 break;
         }
 
-        console.log("score = ", this.score);
+        let score = document.getElementById("score-player");
+        score.innerText = this.score;
 
         if (this.score > 404) {
             this.gg();
@@ -240,6 +265,9 @@ class Game {
 
     updateNextPiece() {
         let piece = this.createPiece();
+        let nextPiece = document.getElementById("next-piece");
+        nextPiece.src = "images_next/" + piece.typeShape + ".svg";
+
         this.nextPiece = piece;
         this.pieces.push(piece);
     }
@@ -269,6 +297,7 @@ class Game {
     draw() {
         this.drawBoard();
         this.drawPiece(this.currentPiece);
+        this.drawPieceImg(this.currentPiece);
     }
 
     loop() {
@@ -284,18 +313,25 @@ class Game {
         this.draw();
         this.intervalId = setInterval(this.loop.bind(this), 1000 - this.score);
         this.addHandlers();
+        this.playMusic();
     }
 
     gg() {
         clearInterval(this.intervalId);
-        alert("Félicitation vous avez perdu votre temps !");
+        let end = document.getElementById("end-dialog");
+        end.innerText = "Félicitation !\nVous avez perdu votre temps !";
+
+        let leftPart = document.getElementById("left-part");
+        leftPart.appendChild(createShareButton());
         this.init();
     }
 
 
     gameOver() {
+        this.stopMusic();
         clearInterval(this.intervalId);
-        alert("Game Over, retry ?");
+        let end = document.getElementById("end-dialog");
+        end.innerText = "Game Over, retry ?";
         this.init();
     }
 
@@ -321,6 +357,39 @@ class Game {
             this.draw();
         });
     }
+
+    playMusic() {
+        this.audio.play();
+        this.audio.loop = true;
+        this.audio.volume = 1;
+    }
+
+    stopMusic(){
+        this.audio.pause();
+    }
+}
+
+function createShareButton() {
+    const btn = document.createElement("button");
+
+    btn.innerText = "share" in navigator ? "Share" : "Share via e-mail";
+
+    const title = document.title;
+    const text = "Check this out!";
+    const url = window.location.href
+    btn.onclick = () => {
+        if (navigator.share !== undefined) {
+            navigator.share({
+                title,
+                text
+            })
+                .then(() => console.log("Shared!"))
+                .catch(err => console.error(err));
+        } else {
+            window.location = `mailto:?subject=${title}&body=${text}%0A${url}`;
+        }
+    };
+    return btn;
 }
 
 let tetris = new Game();
@@ -328,9 +397,5 @@ let tetris = new Game();
 document.addEventListener('keydown', function (e) {
     if (e.key === " ") {
         tetris.start();
-        //play musique tetris_cat_song.mp3
-        /*let audio = new Audio('audio/tetris_cat_song.mp3');
-        audio.play();
-        audio.loop = true;*/
     }
 });
